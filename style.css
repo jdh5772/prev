@@ -1,0 +1,21 @@
+h1{
+    text-align: center;
+    border-bottom: solid 5px black;
+    margin:0;
+}
+ol{
+    margin-left:10px;
+    margin-top:0px;
+    padding-left:25px;
+    line-height: 30px;
+    border-right:solid 5px black;
+    width: 150px;
+}
+#grid{
+    display: grid;
+    grid-template-columns: 200px 1fr;
+}
+a{
+    text-decoration-line: none;
+    text-decoration-color: black;
+}
