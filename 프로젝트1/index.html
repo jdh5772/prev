@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+    <script src="index.js" defer></script>
+  </head>
+  <body>
+    <main>
+      <div class="logo">
+        <img src="./img/logo.png" alt="">
+        <h1>서울 문화행사 정보</h1>
+      </div>
+      <nav class="gnb">
+        <div class="above">
+          <div data-category=" " class="nav-item on">
+            <img src="./img/all.png" alt="" />
+            <a href=""></a>
+            <p>전체</p>
+          </div>
+          <div data-category="뮤지컬" class="nav-item">
+            <img src="./img/musical.png" alt="" />
+            <a href=""></a>
+            <p>뮤지컬/오페라</p>
+          </div>
+          <div data-category="클래식" class="nav-item">
+            <img src="./img/classic.png" alt="" />
+            <a href=""></a>
+            <p>클래식</p>
+          </div>
+          <div data-category="전시" class="nav-item">
+            <img src="./img/art.png" alt="" />
+            <a href=""></a>
+            <p>전시/미술</p>
+          </div>
+          <div data-category="국악" class="nav-item">
+            <img src="./img/koreanMusic.png" alt="" />
+            <a href=""></a>
+            <p>국악</p>
+          </div>
+          <div data-category="무용" class="nav-item">
+            <img src="./img/dancing.png" alt="" />
+            <a href=""></a>
+            <p>무용</p>
+          </div>
+        </div>
+        <div class="under">
+          <div data-category="연극" class="nav-item">
+            <img src="./img/theater 1.png" alt="" />
+            <a href=""></a>
+            <p>연극</p>
+          </div>
+          <div data-category="콘서트" class="nav-item">
+            <img src="./img/concert.png" alt="" />
+            <a href=""></a>
+            <p>콘서트</p>
+          </div>
+          <div data-category="교육" class="nav-item">
+            <img src="./img/education.png" alt="" />
+            <a href=""></a>
+            <p>교육/체험</p>
+          </div>
+          <div data-category="축제" class="nav-item">
+            <img src="./img/festival.png" alt="" />
+            <a href=""></a>
+            <p>축제</p>
+          </div>
+          <div data-category="기타" class="nav-item">
+            <img src="./img/etc.png" alt="" />
+            <a href=""></a>
+            <p>기타</p>
+          </div>
+        </div>
+      </nav>
+      <div class="search">
+        <select name="search" id="select">
+          <option value="search-title">공연 및 행사명</option>
+          <option value="search-date">날짜</option>
+        </select>
+        <input type="text" class="searchInput" placeholder="공연 및 행사명을 입력하세요."/>
+        <button class="searchBtn">검색</button>
+      </div>
+      <ul class="cards" id="cards">
+        <!-- <li class="card">
+          <div class="cardImg"><img src="../img/clear.jpg" alt="" /></div>
+          <p class="cardTitle">제목</p>
+          <p class="cardPlace">장소</p>
+          <p class="cardDate">날짜</p>
+          <a href=""></a>
+        </li>
+        <li class="card">
+            <div class="cardImg"><img src="../img/clear.jpg" alt="" /></div>
+            <p class="cardTitle">제목</p>
+            <p class="cardPlace">장소</p>
+            <p class="cardDate">날짜</p>
+            <a href=""></a>
+          </li>
+          <li class="card">
+            <div class="cardImg"><img src="../img/clear.jpg" alt="" /></div>
+            <p class="cardTitle">제목</p>
+            <p class="cardPlace">장소</p>
+            <p class="cardDate">날짜</p>
+            <a href=""></a>
+          </li>
+          <li class="card">
+            <div class="cardImg"><img src="../img/clear.jpg" alt="" /></div>
+            <p class="cardTitle">제목</p>
+            <p class="cardPlace">장소</p>
+            <p class="cardDate">날짜</p>
+            <a href=""></a>
+          </li>
+          <li class="card">
+            <div class="cardImg"><img src="../img/clear.jpg" alt="" /></div>
+            <p class="cardTitle">제목</p>
+            <p class="cardPlace">장소</p>
+            <p class="cardDate">날짜</p>
+            <a href=""></a>
+          </li>
+          <li class="card">
+            <div class="cardImg"><img src="../img/clear.jpg" alt="" /></div>
+            <p class="cardTitle">제목</p>
+            <p class="cardPlace">장소</p>
+            <p class="cardDate">날짜</p>
+            <a href=""></a>
+          </li> -->
+      </ul>
+      <div class="pgCon">
+        <button class="prevGroup"><<</button>
+        <button class="prevPage"><</button>
+        <button class="on">1</button>
+        <button>2</button>
+        <button>3</button>
+        <button>3</button>
+        <button>3</button>
+        <button>3</button>
+        <button>3</button>
+        <button>3</button>
+        <button>3</button>
+        <button>3</button>
+        <button class="nextPage">></button>
+        <button class="nextGroup">>></button>
+      </div>
+    </main>
+  </body>
+</html>
