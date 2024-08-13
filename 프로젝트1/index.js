@@ -1,4 +1,4 @@
-const API_KEY = '487a4c46786d6f6f39336b6e4c6f51';
+const API_KEY = '';
 const $navItems = document.querySelectorAll('.nav-item');
 const $select = document.getElementById('select');
 const $searchInput = document.querySelector('.searchInput');
