@@ -1,4 +1,4 @@
-const API_KEY = '';
+const API_KEY = '487a4c46786d6f6f39336b6e4c6f51';
 const $navItems = document.querySelectorAll('.nav-item');
 const $select = document.getElementById('select');
 const $searchInput = document.querySelector('.searchInput');
@@ -14,7 +14,7 @@ let currentPage = 1;
 let totalDataNum = 0;
 let currentCategory = ' ';
 let pageSize = 9;
-let groupSize = 10;
+let groupSize = window.innerWidth <=900 ? 5 : 10;
 let currentTitle = ' ';
 let currentDate = ' ';
 let resizing = false;
@@ -30,12 +30,11 @@ const hideLoading = ()=>{
 }
 
 const createHtml = li=>{
-    const img = li['MAIN_IMG'] || './img/no_image.png';
     const title = li.TITLE.length>20 ? li.TITLE.slice(0,20)+' ...' : li.TITLE ;
 
     const html = `
     <li class="card">
-          <div class="cardImg"><img src="${img}" alt="" /></div>
+          <div class="cardImg"><img src="${li['MAIN_IMG']}" alt="" /></div>
           <p class="cardTitle">${title}</p>
           <p class="cardPlace">${li.PLACE}</p>
           <p class="cardDate">${li.STRTDATE.slice(0,10)} ~ ${li['END_DATE'].slice(0,10)}</p>
@@ -60,10 +59,10 @@ const fetchData = async (category=" ",title=" ",date=" ")=>{
         let url = `http://openapi.seoul.go.kr:8088/${API_KEY}/json/culturalEventInfo/${startIdx}/${endIdx}/${category}/${title}/${date}`;
 
         const res = await fetch(url);
-        const data = await res.json();
         if(!res.ok){
             throw new Error('연결 실패');
         }
+        const data = await res.json();
         
         if(data.culturalEventInfo && data.culturalEventInfo.RESULT.MESSAGE === '정상 처리되었습니다'){
             totalDataNum = data.culturalEventInfo['list_total_count'];
@@ -81,7 +80,7 @@ const fetchData = async (category=" ",title=" ",date=" ")=>{
 
     }
     catch(e){
-        console.log(e);
+        console.log(e); 
         $cards.innerHTML = `
         <li>
         <p>데이터를 불러오는데 실패했습니다.</p>
@@ -183,24 +182,12 @@ const handleSelectChange = e => {
 
 
 const handleWindowResize = ()=>{
-    if(resizing){
-        return ;
-    }
-    resizing = true;
-
-    if(window.innerWidth<=900){
-        pageSize = 6;
-        groupSize = 5;
-    } else{
-        pageSize = 9;
-        groupSize = 10;
-    }
-
-    setTimeout(() => {
-        fetchData(currentCategory,currentTitle,currentDate);
+    const resizeGroupSize = window.innerWidth <=900 ? 5 : 10;
+    if(resizeGroupSize !== groupSize){
+        groupSize = resizeGroupSize;
         pagination();
-        resizing = false;
-    }, 300);
+    }
+
 }
 
 const toggleModal = boolean=>{
