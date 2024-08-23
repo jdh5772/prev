@@ -1,10 +1,13 @@
 <%- include('header.ejs')%>
 <main>
     <ul class="posts">
-        <li class="post">
-            <p>제목</p>
-            <p>글 작성자</p>
-        </li>
+        <% posts.map(post=>{ %>
+            <li class="post">
+                <p><%= post.title%></p>
+                <p>글쓴이: <%= post.username%></p>
+                <a href='/list/detail/<%= post._id%>'></a>
+            </li>
+        <% }).join(''); %>
     </ul>
 </main>
 <%- include('footer.ejs')%>
