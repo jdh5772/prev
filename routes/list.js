@@ -6,7 +6,7 @@ const router = express.Router();
 let db;
 connectDB
 .then(client=>{
-    db = client.db('posts');
+    db = client.db('forum');
 })
 
 
@@ -22,9 +22,10 @@ router.get('/write',(req,res)=>{
     }
 })
 
-router.post('/write',(req,res)=>{
+router.post('/write',async (req,res)=>{
     const {title,content} = req.body;
-    
+    await db.collection('posts').insertOne({title:title,content:content});
+    res.redirect('/list');
 })
 
 module.exports = router;
