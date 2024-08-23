@@ -1,0 +1,73 @@
+<%- include('header.ejs')%>
+<main>
+    <form action="/auth/signup" method="post" class="signup-form" id="signup-form">
+        <div class="name-box">
+        <label for="username">ID</label>
+        <input type="text" name="username" id="username" placeholder="ID 입력">
+        </div>
+        <div class="password-box">
+        <label for="password">PASSWORD</label>
+        <input type="password" name="password" id="password" placeholder="패스워드 입력">
+    </div>
+    <div class="text-box">
+        <p id="errorText">내용입력</p>
+        <button type="button" id="checkBtn">중복확인</button>
+        <button type="submit" id="submitBtn">등록</button>
+    </div>
+    </form>
+</main>
+
+<script>
+    const $checkBtn = document.getElementById('checkBtn');
+    const $submitBtn = document.getElementById('submitBtn');
+    const $errorText = document.getElementById('errorText');
+    const $signupForm = document.getElementById('signup-form');
+    let hasDuplication = true;
+    let isChecked = false;
+    $checkBtn.addEventListener('click',async ()=>{
+        const username = document.getElementById('username').value;
+        const response = await fetch('/auth/checkid',{
+            method:'POST',
+            headers: {
+                'Content-Type':'application/json'
+            },
+            body:JSON.stringify({username:username})
+        })
+        const data = await response.json();
+        if(!data.exists){
+            hasDuplication = false;
+            $errorText.innerText = '가입가능';
+            isChecked = true;
+            return ;
+        } else{
+            $errorText.innerText = '중복임';
+            isChecked = true;
+            return ;
+        }
+    })
+
+    $submitBtn.addEventListener('click',e=>{
+        e.preventDefault();
+        const username = $signupForm.username.value;
+        const password = $signupForm.password.value;
+        if(!isChecked){
+            $errorText.innerText = '중복확인하셈';
+            return ;
+        }
+
+        if(hasDuplication){
+            $errorText.innerText = '중복이라 등록안해줌';
+            return ;
+        }
+
+        if(!username || !password){
+            $errorText.innerText = '다 입력하셈';
+            return ;
+        } else{
+            $signupForm.submit();
+        }
+    })
+</script>
+
+
+<%- include('footer.ejs')%>

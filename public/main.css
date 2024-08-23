@@ -1,0 +1,83 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+a{
+    color: black;
+    text-decoration: none;
+}
+
+li{
+    list-style: none;
+}
+
+.signup-form,
+#write-form{
+    width: 25%;
+    position: relative;
+    margin: auto;
+}
+
+.signup-form > div,
+#write-form >div{
+    display: flex;
+    padding: 0.5rem;
+    position: relative;
+}
+
+.signup-form > div > label,
+#write-form >div > label{
+    width: 25%;
+}
+
+.signup-form > div > input,
+#write-form >div > input,
+#write-form >div > textarea{
+    flex: 1;
+}
+
+
+.signup-form > button,
+#write-form > button {
+    width: 70px;
+    padding: 0.5rem;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.text-box{
+    display: flex;
+}
+
+.text-box > p {
+    flex: 1;
+    text-align: center;
+}
+
+header{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    border-bottom: 1px solid grey;
+}
+
+header  a {
+    background-color: lightcoral;
+    padding: 0.5rem;
+}
+
+.posts{
+    padding: 1rem;
+}
+
+.post{
+    background-color: aqua;
+}
+
+.post > * {
+    padding: 0.5rem;
+}

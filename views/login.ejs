@@ -1,0 +1,15 @@
+<%- include('header.ejs')%>
+<main>
+    <form action="/auth/login" method="post" class="signup-form">
+        <div class="name-box">
+        <label for="username">ID</label>
+        <input type="text" name="username" id="username" placeholder="ID 입력">
+        </div>
+        <div class="password-box">
+        <label for="password">PASSWORD</label>
+        <input type="password" name="password" id="password" placeholder="패스워드 입력">
+    </div>
+        <button type="submit">로그인</button>
+    </form>
+</main>
+<%- include('footer.ejs')%>
