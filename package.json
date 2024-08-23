@@ -16,7 +16,8 @@
     "ejs": "^3.1.10",
     "express": "^4.19.2",
     "express-session": "^1.18.0",
-    "mongodb": "^6.8.0"
+    "mongodb": "^6.8.0",
+    "vercel": "^37.1.0"
   },
   "devDependencies": {
     "nodemon": "^3.1.4"
