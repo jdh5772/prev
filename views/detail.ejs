@@ -6,8 +6,10 @@
     <p>작성자: <%= post.username%></p>
     <div class="detail-button-box">
         <a href="/list">리스트로 가기</a>
-        <a href="">수정</a>
-        <a href="">삭제</a>
+        <% if(username === post.username){ %>
+            <a href="/list/edit/<%= post._id%>">수정</a>
+            <a href="/list/delete/<%= post._id%>">삭제</a>
+        <% } %>
     </div>
 </div>
 </main>

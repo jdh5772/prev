@@ -1,8 +1,8 @@
-const dotenv = require('dotenv');
-dotenv.config();
+require('dotenv').config();
 
 const express = require('express');
 const path = require('path');
+const methodOverride = require('method-override');
 const sessionMiddleware = require('./config/session.js');
 const indexRouter = require('./routes/index.js');
 const authRouter = require('./routes/auth.js');
@@ -18,6 +18,7 @@ app.use(express.static(path.join(__dirname,'public')));
 app.use(sessionMiddleware);
 app.use(express.json());
 app.use(express.urlencoded({extended:true}));
+app.use(methodOverride('_method'));
 
 app.use('/',indexRouter);
 app.use('/auth',authRouter);
