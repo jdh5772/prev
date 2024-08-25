@@ -13,6 +13,10 @@ li{
     list-style: none;
 }
 
+h1{
+    text-align: center;
+}
+
 .signup-form,
 #write-form{
     width: 25%;
@@ -118,4 +122,7 @@ header  a {
     display: flex;
     flex-direction: column;
     gap: 1rem;
+    text-align: center;
+    font-size: 50px;
+    margin: 2rem;
 }
