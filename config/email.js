@@ -5,7 +5,7 @@ const smtpTransport = nodemailer.createTransport({
     maxConnections:1,
     service:'naver',
     host:'smtp.naver.com',
-    port: 465,
+    port: 587,
     secure:false,
     requireTLS:true,
     auth:{
