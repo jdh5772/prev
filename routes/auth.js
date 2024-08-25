@@ -4,6 +4,7 @@ const router = express.Router();
 const bcrypt = require('bcrypt');
 const smtpTransport = require('../config/email.js');
 const crypto = require('crypto');
+const BASE_URL = process.env.BASE_URL || 'http://localhost:3000';
 
 const generateEmailVerificationToken = ()=>{
     const token = crypto.randomBytes(20).toString('hex');
@@ -40,6 +41,7 @@ router.post('/signup',async (req,res)=>{
         let {username,password,email} = req.body;
         const hashed = await bcrypt.hash(password,10);
         await db.collection('user').insertOne({username,password:hashed,email});
+        await db.collection('tempUser').deleteOne({email});
         req.session.username = username;
         res.redirect('/');
     }
@@ -94,16 +96,15 @@ router.get('/mail',async (req,res)=>{
         to: email,
         subject : '회원가입 인증',
         html: `
-        <p> <a href="http://localhost:3000/auth/verify/?email=${email}&token=${token}">이거 누르면 인증됨요</a></p>
+        <p> <a href="${BASE_URL}/auth/verify/?email=${email}&token=${token}">이거 누르면 인증됨요</a></p>
         <p>만료일: ${expires}.</p>`
     }
-
 
     const data = await db.collection('tempUser').findOne({email:email});
     if(data){
         if(!data.verified){
             smtpTransport.sendMail(mailOptions,(err,response)=>{
-                smtpTransport.close();
+                // smtpTransport.close();
                 if(err){
                     return res.json({ok : false,message:'이메일 보내기 실패'});
                 }
@@ -115,7 +116,7 @@ router.get('/mail',async (req,res)=>{
         }
     } else{
         smtpTransport.sendMail(mailOptions,(err,response)=>{
-            smtpTransport.close();
+            // smtpTransport.close();
             if(err){
                 return res.json({ok : false,message:'이메일 보내기 실패'});
             }
@@ -139,6 +140,15 @@ router.get('/verify',async (req,res)=>{
         } else{
             res.render('emailAuth',{message:'인증실패임'});
         }
+    }
+})
+
+router.get('/checkVerify',async (req,res)=>{
+    const data = await db.collection('tempUser').findOne({email:req.query.email});
+    if(data && data.verified){
+        res.json({verified:true});
+    } else{
+        res.json({verified:false});
     }
 })
 

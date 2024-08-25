@@ -32,6 +32,7 @@
     let hasDuplication = true;
     let isChecked = false;
     let verifiedEmail = false;
+
     $checkBtn.addEventListener('click',async ()=>{
         const username = document.getElementById('username').value;
         const response = await fetch(`/auth/checkid/?username=${username}`)
@@ -58,11 +59,16 @@
         }
     })
 
-    $submitBtn.addEventListener('click',e=>{
+    $submitBtn.addEventListener('click',async e=>{
         e.preventDefault();
         const username = $signupForm.username.value;
         const password = $signupForm.password.value;
         const email = $signupForm.email.value;
+
+        if(!username || !password || !email){
+            $errorText.innerText = '다 입력하셈';
+            return ;
+        }
 
         if(!isChecked){
             $errorText.innerText = '중복확인하셈';
@@ -74,18 +80,14 @@
             return ;
         }
 
-        if(!verifiedEmail){
-            $errorText.innerText = '이메일 인증 안됨';
-            return ;
-        }
-
-        if(!username || !password || !email){
-            $errorText.innerText = '다 입력하셈';
-            return ;
-        } else{
+        const response = await fetch(`/auth/checkVerify?email=${email}`);
+        const data = await response.json();
+        if(data && data.verified){
             $signupForm.submit();
+        } else{
+            $errorText.innerText = '이메일 인증 아직 안눌렀음';
+            return ;
         }
-
     })
 </script>
 
