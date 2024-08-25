@@ -87,44 +87,38 @@ router.post('/login',async (req,res)=>{
     }
 })
 
-router.get('/mail',async (req,res)=>{
-    const {token,expires} = generateEmailVerificationToken();
-
+router.get('/mail', async (req, res) => {
+    const { token, expires } = generateEmailVerificationToken();
     const email = req.query.email;
     const mailOptions = {
-        from:'moonstne@naver.com',
+        from: 'moonstne@naver.com',
         to: email,
-        subject : '회원가입 인증',
+        subject: '회원가입 인증',
         html: `
         <p> <a href="${BASE_URL}/auth/verify/?email=${email}&token=${token}">이거 누르면 인증됨요</a></p>
         <p>만료일: ${expires}.</p>`
-    }
+    };
 
-    const data = await db.collection('tempUser').findOne({email:email});
-    if(data){
-        if(!data.verified){
-            smtpTransport.sendMail(mailOptions,(err,response)=>{
-                // smtpTransport.close();
-                if(err){
-                    return res.json({ok : false,message:'이메일 보내기 실패'});
-                }
-            })
-            await db.collection('tempUser').updateOne({email:email},{$set:{token:token,expires:expires}});
-            return res.json({ok:true});
-        } else{
-            return res.json({ok:false,message:'이미 인증된 이메일임'});
-        }
-    } else{
-        smtpTransport.sendMail(mailOptions,(err,response)=>{
-            // smtpTransport.close();
-            if(err){
-                return res.json({ok : false,message:'이메일 보내기 실패'});
+    try {
+        const data = await db.collection('tempUser').findOne({ email: email });
+        if (data) {
+            if (!data.verified) {
+                await smtpTransport.sendMail(mailOptions);
+                await db.collection('tempUser').updateOne({ email: email }, { $set: { token: token, expires: expires } });
+                return res.json({ ok: true });
+            } else {
+                return res.json({ ok: false, message: '이미 인증된 이메일임' });
             }
-        })
-        await db.collection('tempUser').insertOne({email:email,token:token,expires:expires,verified:false});
-        return res.json({ok: true});
+        } else {
+            await smtpTransport.sendMail(mailOptions);
+            await db.collection('tempUser').insertOne({ email: email, token: token, expires: expires, verified: false });
+            return res.json({ ok: true });
+        }
+    } catch (err) {
+        console.error('이메일 전송 실패:', err);
+        return res.json({ ok: false, message: '이메일 보내기 실패' });
     }
-})
+});
 
 router.get('/verify',async (req,res)=>{
     const {email,token} = req.query;
