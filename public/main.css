@@ -15,6 +15,7 @@ li{
 
 h1{
     text-align: center;
+    font-size: 30px;
 }
 
 .signup-form,
@@ -69,7 +70,7 @@ header{
     border-bottom: 1px solid grey;
 }
 
-header  a {
+header a {
     background-color: lightcoral;
     padding: 0.5rem;
 }
@@ -125,4 +126,24 @@ header  a {
     text-align: center;
     font-size: 50px;
     margin: 2rem;
+}
+
+@media (max-width:800px) {
+    .index-box{
+        font-size: 20px;
+    }
+
+    header a{
+        font-size: 0.8rem;
+    }
+
+    .detail-button-box > a{
+        padding: 0.7rem;
+    }
+
+    .signup-form,
+    #write-form{
+        width: 100%;
+    }
+
 }
