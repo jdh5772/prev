@@ -113,3 +113,9 @@ header  a {
     background-color: lightcyan;
     padding: 1rem;
 }
+
+.index-box{
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
