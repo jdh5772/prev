@@ -8,9 +8,20 @@
         <a href="/list">리스트로 가기</a>
         <% if(username === post.username){ %>
             <a href="/list/edit/<%= post._id%>">수정</a>
-            <a href="/list/delete/<%= post._id%>">삭제</a>
+            <a href="" id="deleteBtn" data-id="<%= post._id%>">삭제</a>
         <% } %>
     </div>
 </div>
 </main>
+
+<script>
+    const $deleteBtn = document.getElementById('deleteBtn');
+    $deleteBtn.addEventListener('click',async e=>{
+        e.preventDefault();
+        const response = await fetch(`/list/delete/${$deleteBtn.dataset.id}`,{
+
+        });
+        const data = await response.json();
+    })
+</script>
 <%- include('footer.ejs')%>
