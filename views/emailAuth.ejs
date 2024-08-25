@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>인증완료</title>
+    <link rel="stylesheet" href="">
+</head>
+<body onload="autoclose()">
+    <h1><%= message%></h1>
+    <p><span id="second">3</span>초 뒤에 알아서 닫힘</p>
+
+    <script>
+        const $second = document.getElementById('second');
+        let leftSecond = 2;
+
+        const setSecond = setInterval(() => {
+            $second.innerText = leftSecond;
+            leftSecond-=1;
+        }, 1000);
+
+        const autoclose = ()=>{
+            setTimeout(() => {
+                window.close();
+            }, 3000);
+        }
+    </script>
+</body>
+</html>

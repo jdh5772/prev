@@ -8,9 +8,14 @@
         <div class="password-box">
         <label for="password">PASSWORD</label>
         <input type="password" name="password" id="password" placeholder="패스워드 입력">
-    </div>
+        </div>
+        <div class="email-box">
+            <label for="email">EMAIL</label>
+            <input type="email" name="email" id="email" placeholder="이메일 입력">
+        </div>
     <div class="text-box">
         <p id="errorText">내용입력</p>
+        <button type="button" id="verifyBtn">이메일인증</button>
         <button type="button" id="checkBtn">중복확인</button>
         <button type="submit" id="submitBtn">등록</button>
     </div>
@@ -22,17 +27,14 @@
     const $submitBtn = document.getElementById('submitBtn');
     const $errorText = document.getElementById('errorText');
     const $signupForm = document.getElementById('signup-form');
+    const $verifyBtn = document.getElementById('verifyBtn');
+
     let hasDuplication = true;
     let isChecked = false;
+    let verifiedEmail = false;
     $checkBtn.addEventListener('click',async ()=>{
         const username = document.getElementById('username').value;
-        const response = await fetch('/auth/checkid',{
-            method:'POST',
-            headers: {
-                'Content-Type':'application/json'
-            },
-            body:JSON.stringify({username:username})
-        })
+        const response = await fetch(`/auth/checkid/?username=${username}`)
         const data = await response.json();
         if(!data.exists){
             hasDuplication = false;
@@ -46,10 +48,22 @@
         }
     })
 
+    $verifyBtn.addEventListener('click',async ()=>{
+        const response = await fetch(`/auth/mail/?email=${$signupForm.email.value}`);
+        const data = await response.json();
+        if(data.ok){
+            $errorText.innerText = '이메일 인증 보냈음';
+        } else{
+            $errorText.innerText = data.message;
+        }
+    })
+
     $submitBtn.addEventListener('click',e=>{
         e.preventDefault();
         const username = $signupForm.username.value;
         const password = $signupForm.password.value;
+        const email = $signupForm.email.value;
+
         if(!isChecked){
             $errorText.innerText = '중복확인하셈';
             return ;
@@ -60,12 +74,18 @@
             return ;
         }
 
-        if(!username || !password){
+        if(!verifiedEmail){
+            $errorText.innerText = '이메일 인증 안됨';
+            return ;
+        }
+
+        if(!username || !password || !email){
             $errorText.innerText = '다 입력하셈';
             return ;
         } else{
             $signupForm.submit();
         }
+
     })
 </script>
 
