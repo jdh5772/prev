@@ -6,6 +6,7 @@ const smtpTransport = nodemailer.createTransport({
     service:'naver',
     host:'smtp.naver.com',
     port: 587,
+    // 포트 변경해봄
     secure:false,
     requireTLS:true,
     auth:{
