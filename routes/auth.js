@@ -26,8 +26,8 @@ router.get('/signup',(req,res)=>{
     }
 })
 
-router.post('/checkid',async (req,res)=>{
-    const data = await db.collection('user').findOne({username:req.body.username});
+router.get('/checkid',async (req,res)=>{
+    const data = await db.collection('user').findOne({username:req.query.username});
     if(data){
         res.json({exists:true});
     } else{
@@ -37,9 +37,9 @@ router.post('/checkid',async (req,res)=>{
 
 router.post('/signup',async (req,res)=>{
     try{
-        let {username,password} = req.body;
+        let {username,password,email} = req.body;
         const hashed = await bcrypt.hash(password,10);
-        await db.collection('user').insertOne({username,password:hashed});
+        await db.collection('user').insertOne({username,password:hashed,email});
         req.session.username = username;
         res.redirect('/');
     }
@@ -85,31 +85,61 @@ router.post('/login',async (req,res)=>{
     }
 })
 
-router.get('/mail',(req,res)=>{
-    const result = generateEmailVerificationToken();
+router.get('/mail',async (req,res)=>{
+    const {token,expires} = generateEmailVerificationToken();
 
-    const email = 'moonstne@naver.com';
+    const email = req.query.email;
     const mailOptions = {
         from:'moonstne@naver.com',
         to: email,
         subject : '회원가입 인증',
         html: `
-        <p> <a href="http://localhost:3000/verify-email/?email=${email}?token=${result.token}">이거 누르면 인증됨요</a></p>
-        <p>만료일: ${result.expires}.</p>`
+        <p> <a href="http://localhost:3000/auth/verify/?email=${email}&token=${token}">이거 누르면 인증됨요</a></p>
+        <p>만료일: ${expires}.</p>`
     }
 
-    smtpTransport.sendMail(mailOptions, (err, response) => {
-        if(err) {
-            res.json({ok : false , msg : ' 메일 전송에 실패하였습니다. '})
-            smtpTransport.close() //전송종료
-            return ;
-        } else {
-            res.json({ok: true, msg: ' 메일 전송에 성공하였습니다. ', authNum : number})
-            smtpTransport.close() //전송종료
-            return ;
 
+    const data = await db.collection('tempUser').findOne({email:email});
+    if(data){
+        if(!data.verified){
+            smtpTransport.sendMail(mailOptions,(err,response)=>{
+                smtpTransport.close();
+                if(err){
+                    return res.json({ok : false,message:'이메일 보내기 실패'});
+                }
+            })
+            await db.collection('tempUser').updateOne({email:email},{$set:{token:token,expires:expires}});
+            return res.json({ok:true});
+        } else{
+            return res.json({ok:false,message:'이미 인증된 이메일임'});
         }
-    })
+    } else{
+        smtpTransport.sendMail(mailOptions,(err,response)=>{
+            smtpTransport.close();
+            if(err){
+                return res.json({ok : false,message:'이메일 보내기 실패'});
+            }
+        })
+        await db.collection('tempUser').insertOne({email:email,token:token,expires:expires,verified:false});
+        return res.json({ok: true});
+    }
+})
+
+router.get('/verify',async (req,res)=>{
+    const {email,token} = req.query;
+    const data = await db.collection('tempUser').findOne({email:email});
+    if(data.expires<=new Date()){
+        res.render('emailAuth',{message:'인증 기간 만료됨'});
+    } else if(data.verified){
+        res.render('emailAuth',{message:'이미 인증되었음'});
+    } else{
+        if(token === data.token){
+            await db.collection('tempUser').updateOne({email:email},{$set:{verified:true}});
+            res.render('emailAuth',{message:'인증됨'});
+        } else{
+            res.render('emailAuth',{message:'인증실패임'});
+        }
+    }
 })
 
 module.exports = router;
