@@ -100,20 +100,24 @@ router.get('/mail', async (req, res) => {
     };
 
     try {
-        const data = await db.collection('tempUser').findOne({ email: email });
-        if (data) {
-            if (!data.verified) {
+        const user = await db.collection('user').findOne({email:email});
+        const tempData = await db.collection('tempUser').findOne({ email: email });
+        if(user){
+            return res.json({ok:false,message:'이미 인증된 이메일임'});
+        } 
+
+        if(tempData && !tempData.verified){
+            if(!tempData.verified){
                 await smtpTransport.sendMail(mailOptions);
                 await db.collection('tempUser').updateOne({ email: email }, { $set: { token: token, expires: expires } });
                 return res.json({ ok: true });
-            } else {
-                return res.json({ ok: false, message: '이미 인증된 이메일임' });
             }
-        } else {
+        } else{
             await smtpTransport.sendMail(mailOptions);
             await db.collection('tempUser').insertOne({ email: email, token: token, expires: expires, verified: false });
             return res.json({ ok: true });
         }
+
     } catch (err) {
         console.error('이메일 전송 실패:', err);
         return res.json({ ok: false, message: '이메일 보내기 실패' });
@@ -126,7 +130,7 @@ router.get('/verify',async (req,res)=>{
     if(data.expires<=new Date()){
         res.render('emailAuth',{message:'인증 기간 만료됨'});
     } else if(data.verified){
-        res.render('emailAuth',{message:'이미 인증되었음'});
+        res.render('emailAuth',{message:'가입 마저 하러 가셈'});
     } else{
         if(token === data.token){
             await db.collection('tempUser').updateOne({email:email},{$set:{verified:true}});
