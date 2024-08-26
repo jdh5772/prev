@@ -47,12 +47,14 @@ const postEdit = async (req,res)=>{
 }
 
 const deletePost = async (req,res)=>{
-    const post = await db.collection('posts').findOne({_id:new ObjectId(req.params.id)});
+    const id = req.body.id;
+    const csrfToken = req.headers['x-csrf-token'];
+    const post = await db.collection('posts').findOne({_id:new ObjectId(id)});
     if(post.username === req.session.username){
-        await db.collection('posts').deleteOne({_id:new ObjectId(req.params.id)});
-        res.redirect('/list');
+        await db.collection('posts').deleteOne({_id:new ObjectId(id)});
+        res.json({ok:true});
     } else{
-        res.redirect('/list');
+        res.json({ok:false});
     }
 }
 
