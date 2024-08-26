@@ -9,6 +9,7 @@
         <% if(username === post.username){ %>
             <a href="/list/edit/<%= post._id%>">수정</a>
             <a href="" id="deleteBtn" data-id="<%= post._id%>">삭제</a>
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>" id="csrfInput">
         <% } %>
     </div>
 </div>
@@ -16,12 +17,24 @@
 
 <script>
     const $deleteBtn = document.getElementById('deleteBtn');
+    const $csrfInput = document.getElementById('csrfInput');
     $deleteBtn.addEventListener('click',async e=>{
         e.preventDefault();
-        const response = await fetch(`/list/delete/${$deleteBtn.dataset.id}`,{
 
+        const id = $deleteBtn.dataset.id;
+        const csrfToken = $csrfInput.value;
+
+        const response = await fetch(`/list/delete/${id}`,{
+            method:'DELETE',
+            headers:{
+                'Content-Type':'application/json',
+                'X-CSRF-Token': csrfToken
+            }
         });
         const data = await response.json();
+        if(data.ok){
+            window.location.href='/list';
+        }
     })
 </script>
 <%- include('footer.ejs')%>
