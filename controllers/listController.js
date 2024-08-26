@@ -14,7 +14,7 @@ const getAllPosts = async (req,res)=>{
 
 const getWrite = (req,res)=>{
     if(req.session.username){
-        res.render('write',{username:req.session.username});
+        res.render('write',{username:req.session.username,csrfToken:req.csrfToken()});
     } else{
         res.render('login',{username:''});
     }
@@ -28,13 +28,13 @@ const postWrite = async (req,res)=>{
 
 const getDetail = async (req,res)=>{
     const post = await db.collection('posts').findOne({_id:new ObjectId(req.params.id)});
-    res.render('detail',{username:req.session.username,post:post});
+    res.render('detail',{username:req.session.username,post:post,csrfToken:req.csrfToken()});
 }
 
 const getEdit = async (req,res)=>{
     const post = await db.collection('posts').findOne({_id:new ObjectId(req.params.id)});
     if(post.username === req.session.username){
-        res.render('edit',{username:req.session.username,post:post});
+        res.render('edit',{username:req.session.username,post:post,csrfToken:req.csrfToken()});
     } else{
         res.redirect('/list');
     }

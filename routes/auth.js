@@ -23,7 +23,7 @@ router.get('/signup',(req,res)=>{
     if(req.session.username){
         res.render('/');
     } else{
-        res.render('signup',{username:req.session.username});
+        res.render('signup',{username:req.session.username,csrfToken:req.csrfToken()});
     }
 })
 
@@ -52,6 +52,7 @@ router.post('/signup',async (req,res)=>{
 })
 
 router.get('/logout',(req,res)=>{
+    req.csrfToken();
     req.session.destroy(err=>{
         if(err){
             return res.status(500).send('로그아웃 실패');
