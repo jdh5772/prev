@@ -11,14 +11,13 @@ const authRouter = require('./routes/auth.js');
 const listRouter = require('./routes/list.js');
 
 const app = express();
-
 const limiter = rateLimit({
     windowMs: 5 * 60 * 1000, 
     max: 100, 
     standardHeaders: true,
     legacyHeaders: false,
     message: "너무 많이 요청한 거 아님??", 
-  });
+});
 
 app.set('view engine','ejs');
 app.set('views',path.join(__dirname,'views'));
