@@ -4,7 +4,7 @@ const express = require('express');
 const path = require('path');
 const rateLimit = require('express-rate-limit');
 const methodOverride = require('method-override');
-const sessionMiddleware = require('./config/session.js');
+const sessionMiddleware = require('./middleware/session.js');
 
 const indexRouter = require('./routes/index.js');
 const authRouter = require('./routes/auth.js');
