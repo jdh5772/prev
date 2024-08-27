@@ -13,6 +13,27 @@ const generateEmailVerificationToken = ()=>{
     return {token,expires};
 }
 
+const sendVerifyMail = async (target)=>{
+    const { token, expires } = generateEmailVerificationToken();
+    const email = target;
+    const mailOptions = {
+        from: 'moonstne@naver.com',
+        to: email,
+        subject: '회원가입 인증',
+        html: `
+        <p> <a href="${BASE_URL}/auth/verify/?email=${email}&token=${token}">이거 누르면 인증됨요</a></p>
+        <p>만료일: ${expires}.</p>`
+    };
+
+    try{
+        await smtpTransport.sendMail(mailOptions);
+        await db.collection('user').updateOne({ email: email }, { $set: { token: token, expires: expires } });
+    }
+    catch(e){
+        console.error('이메일 전송 실패:', err);
+    }
+}
+
 let db;
 connectDB
 .then(client=>{
@@ -20,10 +41,10 @@ connectDB
 })
 
 router.get('/signup',(req,res)=>{
-    if(req.session.username){
+    if(req.session.verified){
         res.render('/');
     } else{
-        res.render('signup',{username:req.session.username});
+        res.render('signup',{verified:req.session.verified,username:req.session.username});
     }
 })
 
@@ -40,9 +61,11 @@ router.post('/signup',async (req,res)=>{
     try{
         let {username,password,email} = req.body;
         const hashed = await bcrypt.hash(password,10);
-        await db.collection('user').insertOne({username,password:hashed,email});
-        await db.collection('tempUser').deleteOne({email});
+        await db.collection('user').insertOne({username,password:hashed,email,verified:false});
+        await sendVerifyMail(email);
+        req.session.id = await db.collection('user').findOne({username:username})._id;
         req.session.username = username;
+        req.session.verified = false;
         res.redirect('/');
     }
     catch(e){
@@ -61,10 +84,10 @@ router.get('/logout',(req,res)=>{
 })
 
 router.get('/login',(req,res)=>{
-    if(req.session.username){
+    if(req.session.verified){
         res.redirect('/');
     } else{
-        res.render('login',{username:req.session.username});
+        res.render('login',{verified:req.session.verified,username:req.session.username});
     }
 })
 
@@ -87,54 +110,17 @@ router.post('/login',async (req,res)=>{
     }
 })
 
-router.get('/mail', async (req, res) => {
-    const { token, expires } = generateEmailVerificationToken();
-    const email = req.query.email;
-    const mailOptions = {
-        from: 'moonstne@naver.com',
-        to: email,
-        subject: '회원가입 인증',
-        html: `
-        <p> <a href="${BASE_URL}/auth/verify/?email=${email}&token=${token}">이거 누르면 인증됨요</a></p>
-        <p>만료일: ${expires}.</p>`
-    };
-
-    try {
-        const user = await db.collection('user').findOne({email:email});
-        const tempData = await db.collection('tempUser').findOne({ email: email });
-        if(user){
-            return res.json({ok:false,message:'이미 인증된 이메일임'});
-        } 
-
-        if(tempData && !tempData.verified){
-            if(!tempData.verified){
-                await smtpTransport.sendMail(mailOptions);
-                await db.collection('tempUser').updateOne({ email: email }, { $set: { token: token, expires: expires } });
-                return res.json({ ok: true });
-            }
-        } else{
-            await smtpTransport.sendMail(mailOptions);
-            await db.collection('tempUser').insertOne({ email: email, token: token, expires: expires, verified: false });
-            return res.json({ ok: true });
-        }
-
-    } catch (err) {
-        console.error('이메일 전송 실패:', err);
-        return res.json({ ok: false, message: '이메일 보내기 실패' });
-    }
-});
-
 router.get('/verify',async (req,res)=>{
     const {email,token} = req.query;
     const data = await db.collection('tempUser').findOne({email:email});
     if(data.expires<=new Date()){
         res.render('emailAuth',{message:'인증 기간 만료됨'});
     } else if(data.verified){
-        res.render('emailAuth',{message:'가입 마저 하러 가셈'});
+        res.render('emailAuth',{message:'가입 마저 하러 가셈',csrfToken:req.session.csrfToken});
     } else{
         if(token === data.token){
             await db.collection('tempUser').updateOne({email:email},{$set:{verified:true}});
-            res.render('emailAuth',{message:'인증됨'});
+            res.render('emailAuth',{message:'인증됨',csrfToken:req.session.csrfToken});
         } else{
             res.render('emailAuth',{message:'인증실패임'});
         }

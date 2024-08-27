@@ -2,24 +2,24 @@
 <main>
     <h1>회원가입</h1>
     <form action="/auth/signup" method="post" class="signup-form" id="signup-form">
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>" id="csrf">
         <div class="name-box">
-        <label for="username">ID</label>
-        <input type="text" name="username" id="username" placeholder="ID 입력">
+            <label for="username">ID</label>
+            <input type="text" name="username" id="username" placeholder="ID 입력">
         </div>
         <div class="password-box">
-        <label for="password">PASSWORD</label>
-        <input type="password" name="password" id="password" placeholder="패스워드 입력">
+            <label for="password">PASSWORD</label>
+            <input type="password" name="password" id="password" placeholder="패스워드 입력">
         </div>
         <div class="email-box">
             <label for="email">EMAIL</label>
             <input type="email" name="email" id="email" placeholder="이메일 입력">
         </div>
-    <div class="text-box">
-        <p id="errorText">내용입력</p>
-        <button type="button" id="verifyBtn">이메일인증</button>
-        <button type="button" id="checkBtn">중복확인</button>
-        <button type="submit" id="submitBtn">등록</button>
-    </div>
+        <div class="text-box">
+            <p id="errorText">내용입력</p>
+            <button type="button" id="checkBtn">중복확인</button>
+            <button type="submit" id="submitBtn">등록</button>
+        </div>
     </form>
 </main>
 
@@ -28,11 +28,9 @@
     const $submitBtn = document.getElementById('submitBtn');
     const $errorText = document.getElementById('errorText');
     const $signupForm = document.getElementById('signup-form');
-    const $verifyBtn = document.getElementById('verifyBtn');
 
     let hasDuplication = true;
     let isChecked = false;
-    let verifiedEmail = false;
 
     $checkBtn.addEventListener('click',async ()=>{
         const username = document.getElementById('username').value;
@@ -47,16 +45,6 @@
             $errorText.innerText = '중복임';
             isChecked = true;
             return ;
-        }
-    })
-
-    $verifyBtn.addEventListener('click',async ()=>{
-        const response = await fetch(`/auth/mail/?email=${$signupForm.email.value}`);
-        const data = await response.json();
-        if(data.ok){
-            $errorText.innerText = '이메일 인증 보냈음';
-        } else{
-            $errorText.innerText = data.message;
         }
     })
 
@@ -81,14 +69,7 @@
             return ;
         }
 
-        const response = await fetch(`/auth/checkVerify?email=${email}`);
-        const data = await response.json();
-        if(data && data.verified){
-            $signupForm.submit();
-        } else{
-            $errorText.innerText = '이메일 인증 아직 안눌렀음';
-            return ;
-        }
+        $signupForm.submit();
     })
 </script>
 

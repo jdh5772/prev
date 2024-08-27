@@ -13,7 +13,7 @@
         <a href="/list">게시판</a>
         <a href="/list/write">글쓰기</a>
     </nav>
-    <% if(username){ %>
+    <% if(verified){ %>
         <div>
             <span><%= username%></span>
             <a href="/auth/logout">로그아웃</a>
