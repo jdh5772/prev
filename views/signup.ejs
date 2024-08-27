@@ -2,7 +2,6 @@
 <main>
     <h1>회원가입</h1>
     <form action="/auth/signup" method="post" class="signup-form" id="signup-form">
-        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
         <div class="name-box">
         <label for="username">ID</label>
         <input type="text" name="username" id="username" placeholder="ID 입력">
