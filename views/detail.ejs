@@ -9,7 +9,6 @@
         <% if(username === post.username){ %>
             <a href="/list/edit/<%= post._id%>">수정</a>
             <a href="" id="deleteBtn" data-id="<%= post._id%>">삭제</a>
-            <input type="hidden" name="_csrf" value="<%= csrfToken %>" id="csrfInput">
         <% } %>
     </div>
 </div>
@@ -22,14 +21,9 @@
         e.preventDefault();
 
         const id = $deleteBtn.dataset.id;
-        const csrfToken = $csrfInput.value;
 
         const response = await fetch(`/list/delete/${id}`,{
-            method:'DELETE',
-            headers:{
-                'Content-Type':'application/json',
-                'X-CSRF-Token': csrfToken
-            }
+            method:'DELETE'
         });
         const data = await response.json();
         if(data.ok){

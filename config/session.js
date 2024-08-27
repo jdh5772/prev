@@ -8,7 +8,12 @@ const sessionMiddleware = session({
     store:MongoStore.create({
         mongoUrl:process.env.URL,
         dbName:'user'
-    })
+    }),
+    cookie:{
+        secure:false,
+        httpOnly:true,
+        sameSite:'strict'
+    }
 });
 
 module.exports = sessionMiddleware;

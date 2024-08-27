@@ -5,7 +5,6 @@ const path = require('path');
 const rateLimit = require('express-rate-limit');
 const methodOverride = require('method-override');
 const sessionMiddleware = require('./config/session.js');
-const csurf = require('csurf');
 
 const indexRouter = require('./routes/index.js');
 const authRouter = require('./routes/auth.js');
@@ -26,13 +25,7 @@ app.use(express.static(path.join(__dirname,'public')));
 app.use(sessionMiddleware);
 app.use(express.json());
 app.use(express.urlencoded({extended:true}));
-app.use(csurf());
 app.use(methodOverride('_method'));
-
-app.use((req,res,next)=>{
-    res.locals.csrfToken = req.csrfToken();
-    next();
-});
 
 app.use(limiter);
 app.use('/',indexRouter);
