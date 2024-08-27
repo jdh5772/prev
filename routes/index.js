@@ -1,7 +1,8 @@
-const getIndex = require('../controllers/indexController.js');
 const express = require('express');
 const router = express.Router();
 
-router.get('/',getIndex);
+router.get('/',(req,res)=>{
+    res.render('index',{username:req.session.username});
+})
 
 module.exports = router;
