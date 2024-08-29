@@ -87,7 +87,7 @@ router.get('/login',(req,res)=>{
     if(req.session.verified){
         res.redirect('/');
     } else{
-        res.render('login',{verified:req.session.verified,username:req.session.username});
+        res.render('login',{verified:req.session.verified,csrfToken:res.locals.csrfToken});
     }
 })
 
@@ -101,6 +101,7 @@ router.post('/login',async (req,res)=>{
             res.redirect('/auth/login');
         } else{
             req.session.username = username;
+            req.session.verified = true;
             res.redirect('/');
         }
     }
@@ -112,27 +113,18 @@ router.post('/login',async (req,res)=>{
 
 router.get('/verify',async (req,res)=>{
     const {email,token} = req.query;
-    const data = await db.collection('tempUser').findOne({email:email});
+    const data = await db.collection('user').findOne({email:email});
     if(data.expires<=new Date()){
         res.render('emailAuth',{message:'인증 기간 만료됨'});
     } else if(data.verified){
-        res.render('emailAuth',{message:'가입 마저 하러 가셈',csrfToken:req.session.csrfToken});
+        res.render('emailAuth',{message:'가입 마저 하러 가셈'});
     } else{
         if(token === data.token){
-            await db.collection('tempUser').updateOne({email:email},{$set:{verified:true}});
-            res.render('emailAuth',{message:'인증됨',csrfToken:req.session.csrfToken});
+            await db.collection('user').updateOne({email:email},{$set:{verified:true}});
+            res.render('emailAuth',{message:'인증됨'});
         } else{
             res.render('emailAuth',{message:'인증실패임'});
         }
-    }
-})
-
-router.get('/checkVerify',async (req,res)=>{
-    const data = await db.collection('tempUser').findOne({email:req.query.email});
-    if(data && data.verified){
-        res.json({verified:true});
-    } else{
-        res.json({verified:false});
     }
 })
 
