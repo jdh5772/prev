@@ -4,7 +4,9 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "dev": "tsc -w"
+    "build":"tsc",
+    "start":"node dist/app.js",
+    "dev": "nodemon src/app.ts"
   },
   "keywords": [],
   "author": "",
@@ -17,6 +19,7 @@
     "ejs": "^3.1.10",
     "express": "^4.19.2",
     "mongodb": "^6.8.0",
+    "ts-node": "^10.9.2",
     "typescript": "^5.5.4"
   }
 }
