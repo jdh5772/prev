@@ -1,27 +1,51 @@
 <%- include('header.ejs')%>
 <main>
     <div class="detail-box">
-    <p>제목: <%= post.title%></p>
-    <p>내용: <%= post.content%></p>
-    <p>작성자: <%= post.username%></p>
-    <div class="detail-button-box">
-        <a href="/list">리스트로 가기</a>
-        <% if(username === post.username){ %>
+        <p>제목: <%= post.title%></p>
+        <p>내용: <%= post.content%></p>
+        <p>작성자: <%= post.username%></p>
+        <div class="detail-button-box">
+            <a href="/list">리스트로 가기</a>
+            <% if(username === post.username){ %>
             <a href="/list/edit/<%= post._id%>">수정</a>
-            <a href="/list/delete/<%= post._id%>">삭제</a>
-        <% } %>
+            <a id="deleteBtn" data-id="<%= post._id%>">삭제</a>
+            <input
+                type="hidden"
+                name="_csrf"
+                value="<%= csrfToken %>"
+                id="csrf"
+            />
+            <% } %>
+        </div>
     </div>
-</div>
 </main>
 
 <script>
-    const $deleteBtn = document.getElementById('deleteBtn');
-    $deleteBtn.addEventListener('click',async e=>{
-        e.preventDefault();
-        const response = await fetch(`/list/delete/${$deleteBtn.dataset.id}`,{
-
-        });
-        const data = await response.json();
-    })
+    const $deleteBtn = document.getElementById("deleteBtn");
+    const $csrfInput = document.getElementById("csrf");
+    if ($deleteBtn) {
+        try {
+            $deleteBtn.addEventListener("click", async () => {
+                const response = await fetch(
+                    `/list/delete/${$deleteBtn.dataset.id}`,
+                    {
+                        method: "DELETE",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "x-csrf-token": $csrfInput.value,
+                        },
+                    }
+                );
+                const data = await response.json();
+                if(data.ok){
+                    window.location.href = '/list';
+                } else{
+                    console.error('삭제실패');
+                }
+            });
+        } catch (e) {
+            console.log(e);
+        }
+    }
 </script>
 <%- include('footer.ejs')%>

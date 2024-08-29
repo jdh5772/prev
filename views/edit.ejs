@@ -2,6 +2,7 @@
 <main>
     <h1>수정하기</h1>
     <form action="/list/edit/<%= post._id%>" method="post" id="write-form">
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>" id="csrf">
         <div>
         <label for="title">제목</label>
         <input type="text" name="title" id="title" value="<%= post.title%>">
