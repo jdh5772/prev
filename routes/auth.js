@@ -2,37 +2,8 @@ const express = require('express');
 const connectDB = require('../config/db');
 const router = express.Router();
 const bcrypt = require('bcrypt');
-const smtpTransport = require('../config/email.js');
-const crypto = require('crypto');
-const BASE_URL = process.env.BASE_URL || 'http://localhost:3000';
-
-const generateEmailVerificationToken = ()=>{
-    const token = crypto.randomBytes(20).toString('hex');
-    const expires = new Date();
-    expires.setHours(expires.getHours()+24);
-    return {token,expires};
-}
-
-const sendVerifyMail = async (mail,username)=>{
-    const { token, expires } = generateEmailVerificationToken();
-    const email = mail;
-    const mailOptions = {
-        from: 'moonstne@naver.com',
-        to: email,
-        subject: '회원가입 인증',
-        html: `
-        <p> <a href="${BASE_URL}/auth/verify/?username=${username}&token=${token}">이거 누르면 인증됨요</a></p>
-        <p>만료일: ${expires}.</p>`
-    };
-
-    try{
-        await smtpTransport.sendMail(mailOptions);
-        await db.collection('user').updateOne({ email: email }, { $set: { token: token, expires: expires } });
-    }
-    catch(e){
-        console.error('이메일 전송 실패:', err);
-    }
-}
+const sendVerifyMail = require('../utils/emailUtils');
+const { v4: uuidv4 } = require('uuid');
 
 let db;
 connectDB
@@ -45,6 +16,24 @@ router.get('/signup',(req,res)=>{
         res.render('/');
     } else{
         res.render('signup');
+    }
+})
+
+router.post('/signup',async (req,res)=>{
+    try{
+        let {username,password,email} = req.body;
+        const uuid = uuidv4();
+        const hashed = await bcrypt.hash(password,10);
+        await db.collection('user').insertOne({username,password:hashed,email,verified:false,uuid});
+        await sendVerifyMail(email,username);
+        req.session.id = await db.collection('user').findOne({username})._id;
+        req.session.username = username;
+        req.session.verified = false;
+        res.redirect('/');
+    }
+    catch(e){
+        console.log(e);
+        res.status(500).send('Server Error');
     }
 })
 
@@ -66,31 +55,7 @@ router.get('/checkEmail',async (req,res)=>{
     }
 })
 
-router.post('/signup',async (req,res)=>{
-    try{
-        let {username,password,email} = req.body;
-        const hashed = await bcrypt.hash(password,10);
-        await db.collection('user').insertOne({username,password:hashed,email,verified:false});
-        await sendVerifyMail(email,username);
-        req.session.id = await db.collection('user').findOne({username:username})._id;
-        req.session.username = username;
-        req.session.verified = false;
-        res.redirect('/');
-    }
-    catch(e){
-        console.log(e);
-        res.status(500).send('Server Error');
-    }
-})
 
-router.get('/logout',(req,res)=>{
-    req.session.destroy(err=>{
-        if(err){
-            return res.status(500).send('로그아웃 실패');
-        }
-    })
-    res.redirect('/');
-})
 
 router.get('/login',(req,res)=>{
     if(req.session.verified){
@@ -104,13 +69,18 @@ router.post('/login',async (req,res)=>{
     try{
         const {username,password} = req.body;
         const user = await db.collection('user').findOne({username});
-        const compared = await bcrypt.compare(password,user.password);
+        let compared ;
+        
+        if(user){
+            compared = await bcrypt.compare(password,user.password);
+        }
 
         if(!user || !compared){
             res.redirect('/');
         } else{
             req.session.verified = user.verified;
             req.session.username = user.username;
+            req.session.uuid = user.uuid;
             res.redirect('/');
         }
     }
@@ -119,6 +89,16 @@ router.post('/login',async (req,res)=>{
         res.status(500).send('Server error');
     }
 })
+
+router.get('/logout',(req,res)=>{
+    req.session.destroy(err=>{
+        if(err){
+            return res.status(500).send('로그아웃 실패');
+        }
+    })
+    res.redirect('/');
+})
+
 
 router.get('/verify',async (req,res)=>{
     const {username,token} = req.query;
