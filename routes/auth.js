@@ -139,8 +139,8 @@ router.get('/reVerifyMail',(req,res)=>{
 router.post('/reVerifyMail',async (req,res)=>{
     const {username,password} = req.body;
     const user = await db.collection('user').findOne({username});
-    const compared = await bcrypt.compare(password,user.password);
     if(user){
+        const compared = await bcrypt.compare(password,user.password);
         if(compared){
             await sendVerifyMail(user.email,username);
             res.render('verifyUser',{message:'재발송했음.'})
