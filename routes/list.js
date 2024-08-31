@@ -13,14 +13,14 @@ connectDB
 
 router.get('/',async (req,res)=>{
     const posts = await db.collection('posts').find().toArray();
-    res.render('list',{verified:req.session.verified,username:req.session.username,posts:posts});
+    res.render('list',{posts:posts});
 })
 
 router.get('/write',(req,res)=>{
-    if(req.session.username){
-        res.render('write',{verified:req.session.verified,username:req.session.username,csrfToken:res.locals.csrfToken});
+    if(req.session.verified){
+        res.render('write');
     } else{
-        res.render('login',{username:''});
+        res.render('login');
     }
 })
 
@@ -32,13 +32,13 @@ router.post('/write',async (req,res)=>{
 
 router.get('/detail/:id',async (req,res)=>{
     const post = await db.collection('posts').findOne({_id:new ObjectId(req.params.id)});
-    res.render('detail',{verified:req.session.verified,username:req.session.username,post:post});
+    res.render('detail',{post});
 })
 
 router.get('/edit/:id',async (req,res)=>{
     const post = await db.collection('posts').findOne({_id:new ObjectId(req.params.id)});
     if(post.username === req.session.username){
-        res.render('edit',{verified:req.session.verified,username:req.session.username,post:post,csrfToken:res.locals.csrfToken});
+        res.render('edit',{post});
     } else{
         res.redirect('/list');
     }
@@ -46,7 +46,7 @@ router.get('/edit/:id',async (req,res)=>{
 
 router.post('/edit/:id',async (req,res)=>{
     const {title,content} = req.body;
-    await db.collection('posts').updateOne({_id:new ObjectId(req.params.id)},{$set:{title:title,content:content,username:req.session.username}});
+    await db.collection('posts').updateOne({_id:new ObjectId(req.params.id)},{$set:{title,content}});
     res.redirect('/list');
 })
 
