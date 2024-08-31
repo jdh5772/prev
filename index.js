@@ -7,6 +7,7 @@ const methodOverride = require('method-override');
 const sessionMiddleware = require('./middleware/session.js');
 const generateTokenMiddleware = require('./middleware/generateToken.js');
 const verifyCsrfTokenMiddleware = require('./middleware/verifyCsrfToken.js');
+const saveLocals = require('./middleware/saveLocals.js');
 
 const indexRouter = require('./routes/index.js');
 const authRouter = require('./routes/auth.js');
@@ -28,6 +29,7 @@ app.use(sessionMiddleware);
 app.use(express.json());
 app.use(express.urlencoded({extended:true}));
 app.use(generateTokenMiddleware);
+app.use(saveLocals);
 app.use(verifyCsrfTokenMiddleware);
 app.use(methodOverride('_method'));
 
