@@ -1,7 +1,7 @@
 <%- include('header.ejs')%>
 <main>
-    <h1>로그인</h1>
-    <form action="/auth/login" method="post" class="signup-form">
+    <h1>이메일 재인증</h1>
+    <form action="/auth/reVerifyMail" method="post" class="signup-form">
         <input type="hidden" name="_csrf" value="<%= csrfToken %>" id="csrf">
         <div class="name-box">
         <label for="username">ID</label>
@@ -11,7 +11,7 @@
         <label for="password">PASSWORD</label>
         <input type="password" name="password" id="password" placeholder="패스워드 입력">
     </div>
-        <button type="submit">로그인</button>
+        <button type="submit">재발송</button>
     </form>
 </main>
 <%- include('footer.ejs')%>

@@ -1,19 +1,25 @@
 <%- include('header.ejs')%>
 <main>
+    <h1>회원가입</h1>
     <form action="/auth/signup" method="post" class="signup-form" id="signup-form">
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>" id="csrf">
         <div class="name-box">
-        <label for="username">ID</label>
-        <input type="text" name="username" id="username" placeholder="ID 입력">
+            <label for="username">ID</label>
+            <input type="text" name="username" id="username" placeholder="ID 입력">
         </div>
         <div class="password-box">
-        <label for="password">PASSWORD</label>
-        <input type="password" name="password" id="password" placeholder="패스워드 입력">
-    </div>
-    <div class="text-box">
-        <p id="errorText">내용입력</p>
-        <button type="button" id="checkBtn">중복확인</button>
-        <button type="submit" id="submitBtn">등록</button>
-    </div>
+            <label for="password">PASSWORD</label>
+            <input type="password" name="password" id="password" placeholder="패스워드 입력">
+        </div>
+        <div class="email-box">
+            <label for="email">EMAIL</label>
+            <input type="email" name="email" id="email" placeholder="이메일 입력">
+        </div>
+        <div class="text-box">
+            <p id="errorText">내용입력</p>
+            <button type="button" id="checkBtn">중복확인</button>
+            <button type="submit" id="submitBtn">등록</button>
+        </div>
     </form>
 </main>
 
@@ -22,50 +28,62 @@
     const $submitBtn = document.getElementById('submitBtn');
     const $errorText = document.getElementById('errorText');
     const $signupForm = document.getElementById('signup-form');
-    let hasDuplication = true;
+
+    let hasSameId = true;
+    let hasSameMail = true;
     let isChecked = false;
+
     $checkBtn.addEventListener('click',async ()=>{
         const username = document.getElementById('username').value;
-        const response = await fetch('/auth/checkid',{
-            method:'POST',
-            headers: {
-                'Content-Type':'application/json'
-            },
-            body:JSON.stringify({username:username})
-        })
-        const data = await response.json();
-        if(!data.exists){
-            hasDuplication = false;
-            $errorText.innerText = '가입가능';
-            isChecked = true;
-            return ;
+        const email = document.getElementById('email').value;
+        const idResponse = await fetch(`/auth/checkid/?username=${username}`);
+        const emailResponse = await fetch(`/auth/checkEmail/?email=${email}`);
+        const idData = await idResponse.json();
+        const emailData = await emailResponse.json();
+        isChecked = true;
+        if(!idData.exists){
+            hasSameId = false;
+            if(!emailData.exists){
+                hasSameMail = false;
+                $errorText.innerText = '가입가능';
+                return ;
+            } else{
+                $errorText.innerText = '이메일 중복임';
+                return ;
+            }
         } else{
-            $errorText.innerText = '중복임';
-            isChecked = true;
+            $errorText.innerText = '아이디 중복임';
             return ;
         }
     })
 
-    $submitBtn.addEventListener('click',e=>{
+    $submitBtn.addEventListener('click',async e=>{
         e.preventDefault();
         const username = $signupForm.username.value;
         const password = $signupForm.password.value;
+        const email = $signupForm.email.value;
+
+        if(!username || !password || !email){
+            $errorText.innerText = '다 입력하셈';
+            return ;
+        }
+
         if(!isChecked){
             $errorText.innerText = '중복확인하셈';
             return ;
         }
 
-        if(hasDuplication){
-            $errorText.innerText = '중복이라 등록안해줌';
+        if(hasSameId){
+            $errorText.innerText = 'ID 중복이라 등록안해줌';
             return ;
         }
 
-        if(!username || !password){
-            $errorText.innerText = '다 입력하셈';
+        if(hasSameMail){
+            $errorText.innerText = 'E-MAIL 중복이라 등록안해줌';
             return ;
-        } else{
-            $signupForm.submit();
         }
+
+        $signupForm.submit();
     })
 </script>
 
