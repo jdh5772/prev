@@ -29,21 +29,30 @@
     const $errorText = document.getElementById('errorText');
     const $signupForm = document.getElementById('signup-form');
 
-    let hasDuplication = true;
+    let hasSameId = true;
+    let hasSameMail = true;
     let isChecked = false;
 
     $checkBtn.addEventListener('click',async ()=>{
         const username = document.getElementById('username').value;
-        const response = await fetch(`/auth/checkid/?username=${username}`)
-        const data = await response.json();
-        if(!data.exists){
-            hasDuplication = false;
-            $errorText.innerText = '가입가능';
-            isChecked = true;
-            return ;
+        const email = document.getElementById('email').value;
+        const idResponse = await fetch(`/auth/checkid/?username=${username}`);
+        const emailResponse = await fetch(`/auth/checkEmail/?email=${email}`);
+        const idData = await idResponse.json();
+        const emailData = await emailResponse.json();
+        isChecked = true;
+        if(!idData.exists){
+            hasSameId = false;
+            if(!emailData.exists){
+                hasSameMail = false;
+                $errorText.innerText = '가입가능';
+                return ;
+            } else{
+                $errorText.innerText = '이메일 중복임';
+                return ;
+            }
         } else{
-            $errorText.innerText = '중복임';
-            isChecked = true;
+            $errorText.innerText = '아이디 중복임';
             return ;
         }
     })
@@ -64,8 +73,13 @@
             return ;
         }
 
-        if(hasDuplication){
-            $errorText.innerText = '중복이라 등록안해줌';
+        if(hasSameId){
+            $errorText.innerText = 'ID 중복이라 등록안해줌';
+            return ;
+        }
+
+        if(hasSameMail){
+            $errorText.innerText = 'E-MAIL 중복이라 등록안해줌';
             return ;
         }
 

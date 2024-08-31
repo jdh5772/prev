@@ -57,6 +57,15 @@ router.get('/checkid',async (req,res)=>{
     }
 })
 
+router.get('/checkEmail',async (req,res)=>{
+    const data = await db.collection('user').findOne({email:req.query.email});
+    if(data){
+        res.json({exists:true});
+    } else{
+        res.json({exists:false});
+    }
+})
+
 router.post('/signup',async (req,res)=>{
     try{
         let {username,password,email} = req.body;
