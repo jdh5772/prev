@@ -1,4 +1,5 @@
 const Post = require('../models/postModel');
+const Comment = require('../models/commentModel');
 
 exports.getList = async (req,res)=>{
     const posts = await Post.getAllPosts();
@@ -46,5 +47,17 @@ exports.deletePost = async (req,res)=>{
         res.json({ok:true});
     } else{
         res.status(404).json({ok:false});
+    }
+}
+
+exports.addComments = async (req,res)=>{
+    const {username,comment,postId} = req.body;
+    try{
+        await Comment.addComment(postId,username,comment);
+        res.json({ok:true});
+    }
+    catch(e){
+        console.log(e);
+        res.json({ok:false});
     }
 }

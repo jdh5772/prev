@@ -19,6 +19,18 @@ h1{
     font-size: 30px;
 }
 
+button{
+    background : none;
+    border: none;
+    cursor: pointer;
+    background-color: lightpink;
+}
+
+.mw{
+    max-width: 1200px;
+    width: calc(100% - 1rem);
+}
+
 .signup-form,
 #write-form{
     width: 25%;
@@ -100,9 +112,39 @@ header a {
     top: 0;
 }
 
-.detail-box{
+.detail-input-box{
+    width: 100%;
+    display: flex;
+    gap: 1rem;
     padding: 1rem;
-    position: relative;
+}
+
+.detail-input-box > input{
+    flex: 1;
+    padding: 1rem;
+}
+
+.detail-input-box > button {
+    background-color: lightpink;
+    padding: 1rem;
+}
+
+.detailCon{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: auto;
+    gap: 2rem;
+}
+
+.detail-box{
+    width: 100%;
+    padding: 1rem;
+    white-space: normal;
+    overflow-y: auto;
+    word-wrap: break-word; 
+    word-break: break-word;
 }
 
 .detail-box > p {
@@ -110,13 +152,23 @@ header a {
 }
 
 .detail-button-box{
-    position: absolute;
-    left: 30%;
-    bottom: -10%;
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    align-items: center;
 }
 
 .detail-button-box > a{
     background-color: lightcyan;
+    padding: 1rem;
+}
+
+.comments{
+    width: 100%;
+    padding: 0 1rem;
+}
+
+.comment{
     padding: 1rem;
 }
 
