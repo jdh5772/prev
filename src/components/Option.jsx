@@ -1,3 +1,3 @@
-export default function Option({group}){
-    return (<option value={group}>{group}</option>);
+export default function Option({ group, idx }) {
+    return <option value={group}>{group}</option>;
 }

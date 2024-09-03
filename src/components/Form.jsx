@@ -2,10 +2,9 @@ import { useState } from "react";
 import InputEl from "./InputEl";
 import SelectEl from "./selectEl";
 
-export default function Form({setLists,lists,groups}) {
+export default function Form({setLists,lists,groups,group,setGroup}) {
     const [name,setName] = useState(null);
     const [tel,setTel] = useState(null);
-    const [group,setGroup] = useState(groups[0]);
     const [content,setContent] = useState(null);
 
     const addData = e=>{
