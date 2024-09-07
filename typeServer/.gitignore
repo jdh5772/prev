@@ -1,0 +1,46 @@
+# Node modules
+node_modules/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# dotenv environment variables file
+.env
+.env.local
+.env.*.local
+
+# Production build output
+build/
+dist/
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Editor directories and files
+.idea/
+.vscode/
+*.swp
+
+# Debugger configurations
+*.repl-history
+
+# npm package files
+package-lock.json
+yarn.lock
+
+# Coverage directory used by testing tools
+coverage/
+
+# Temporary files
+tmp/
+temp/
+
+# Additional directories
+.cache/
+.next/
+.nuxt/
