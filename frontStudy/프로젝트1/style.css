@@ -1,0 +1,323 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+li{
+    list-style: none;
+}
+
+a{
+    text-decoration: none;
+    color: black;
+    cursor: pointer;
+}
+
+button{
+    border: 0;
+    background-color: transparent;
+    cursor: pointer;
+}
+
+
+main{
+    max-width: 1500px;
+    width: calc(100% - 2rem);
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 3rem;
+    padding: 3rem 0;
+}
+
+
+.logo{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+}
+
+.logo img{
+    width: 30%;
+    height: 30%;
+    object-fit: contain;
+    padding: 1rem;
+}
+
+h1{
+    color: #EE6352;
+    font-size: 32px;
+}
+
+.gnb{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.gnb > div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 50px;
+    margin-bottom: 50px;
+}
+
+.gnb > div > div{
+    position: relative;
+    width: 100px;
+    height: 100px;
+    background-color: #EFE9F4;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 40px;
+}
+
+.gnb > div > div:hover,
+.gnb > div > div.on{
+    background-color: #EE6352;
+    transition: 0.3s;
+}
+
+.gnb img{
+    width: 50%;
+    height: 50%;
+    object-fit: contain;
+}
+
+.gnb a{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+}
+
+
+.gnb p{
+    text-align: center;
+    position: absolute;
+    bottom: -2rem;
+    width: 110%;
+}
+
+.search{
+    width: 40%;
+    padding: 0 1rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+}
+
+.searchInput{
+    flex: 1;
+}
+
+.search > * {
+    padding: 0.5rem;
+}
+
+.searchBtn {
+    right: 1rem;
+}
+
+.cards{
+    width: 70%;
+    display: grid;
+    grid-template-columns: repeat(3,1fr);
+    gap: 2rem;
+}
+
+.card{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    background-color: #F4F5F7;
+    position: relative;
+}
+
+.card > * {
+    width: 100%;
+}
+
+.card p {
+    padding: 0.5rem;
+}
+
+.card p:nth-of-type(3){
+    margin-bottom: 1rem;
+}
+
+.card a {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+}
+
+.cardImg{
+    padding-top: 100%;
+    position: relative;
+}
+
+.cardImg img{
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    left: 0;
+    top: 0;
+    object-fit: cover;
+}
+
+.pgCon{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+    width: 60%;
+}
+
+.pgCon > * {
+    padding: 1rem;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.pgCon .on{
+    border: 1px solid #4200FF;
+    color: #4200FF;
+    border-radius: 4px;
+}
+
+.ham{
+    display: none;
+    width: 25px;
+    height: 25px;
+    background-image: url(./img/menu.png);
+    background-repeat: no-repeat;
+    transform: translateY(0);
+    background-size: cover;
+}
+
+.spinner {
+    border: 8px solid #f3f3f3;
+    border-top: 8px solid #3498db;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 2s linear infinite;
+    margin: 0 auto;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.loading {
+    text-align: center;
+    padding: 20px;
+    display: none;
+}
+
+.modal{
+    display: none;
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: white;
+    padding: 1rem;
+    z-index: 10;
+}
+
+.modal.on{
+    display: block;
+}
+
+.modal-title{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem;
+}
+
+.modal-ham{
+    width: 30px;
+    height: 30px;
+    background-image: url(./img/menu.png);
+    background-repeat: no-repeat;
+    background-size: contain;
+    transform: translateY(20%);
+}
+
+.modal-item{
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid lightgrey;
+    cursor: pointer;
+}
+
+
+@media (max-width: 900px){
+    main{
+        position: relative;
+        gap: 1.5rem;
+    }
+
+    .gnb {
+        display: none;
+    }
+
+    .logo{
+        display: flex;
+        width: 100%;
+        justify-content: space-between;
+        padding: 0 1rem;
+    }
+
+    .logo img{
+        display: none;
+    }
+
+    h1{
+        font-size: 20px;
+    }
+    
+    .search{
+        gap: 0.5rem;
+        width: 100%;
+        padding: 0;
+    }
+
+    .searchInput{
+        width: 140px;
+    }
+
+    .searchBtn{
+        width: 50px;
+    }
+
+    #select{
+        width: 110px;
+    }
+
+    .ham{
+        display: block;
+    }
+
+    .cards{
+        grid-template-columns: repeat(1,1fr);
+    }
+}
