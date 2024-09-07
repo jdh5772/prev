@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="/main.css?v=20240825">
+</head>
+<body>
+    <header>
+    <nav>
+        <a href="/">HOME</a>
+        <a href="/list">게시판</a>
+        <a href="/list/write">글쓰기</a>
+    </nav>
+    <% if(verified){ %>
+        <div>
+            <span><%= username%></span>
+            <a href="/auth/logout">로그아웃</a>
+        </div>
+    <% } else{ %>
+        <div>
+        <a href="/auth/signup">회원가입</a>
+        <a href="/auth/login">로그인</a>
+    </div>
+    <% } %>
+</header>

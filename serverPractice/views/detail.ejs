@@ -1,0 +1,105 @@
+<%- include('header.ejs')%>
+<main>
+    <div class="detailCon mw">
+        <div class="detail-box">
+            <p>제목: <%= post.title%></p>
+            <p>내용: <%= post.content%></p>
+            <p>작성자: <%= post.username%></p>
+            <p>발행일: <%= post.createdAt%></p>
+        </div>
+        <div class="detail-button-box">
+            <a href="/list">리스트로 가기</a>
+            <% if(uuid === post.userUUID){ %>
+            <a href="/list/edit/<%= post._id%>">수정</a>
+            <a id="deleteBtn" data-id="<%= post._id%>">삭제</a>
+            <input
+                type="hidden"
+                name="_csrf"
+                value="<%= csrfToken %>"
+                id="csrf"
+            />
+            <% } %>
+        </div>
+        <div class="detail-input-box">
+            <input type="text" placeholder="로그인 해야 댓글 입력 가능"
+            id="detail-input" <%= !verified ? 'disabled' : ''%> />
+            <button
+                type="button"
+                id="detail-input-button"
+                data-postid="<%= post._id %>"
+                data-username="<%= username%>"
+            >
+                댓글입력
+            </button>
+        </div>
+        <ul class="comments" id="comments">
+            <li class="comment">
+                <p>댓글임</p>
+                <p>작성자 : asdf</p>
+                <p>작성일 : </p>
+            </li>
+            <li class="comment">
+                <p>댓글임</p>
+                <p>작성자 : asdf</p>
+            </li>
+        </ul>
+    </div>
+</main>
+
+<script>
+    const $deleteBtn = document.getElementById("deleteBtn");
+    const $csrfInput = document.getElementById("csrf");
+    const $detailInputBtn = document.getElementById("detail-input-button");
+    const $detailInput = document.getElementById("detail-input");
+    const $comments = document.getElementById('comments');
+    if ($deleteBtn) {
+        try {
+            $deleteBtn.addEventListener("click", async () => {
+                const response = await fetch(
+                    `/list/delete/${$deleteBtn.dataset.id}`,
+                    {
+                        method: "DELETE",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "x-csrf-token": $csrfInput.value,
+                        },
+                    }
+                );
+                const data = await response.json();
+                if (data.ok) {
+                    window.location.href = "/list";
+                } else {
+                    console.error("삭제실패");
+                }
+            });
+        } catch (e) {
+            console.log(e);
+        }
+    }
+
+    $detailInputBtn.addEventListener("click", async (e) => {
+        const content = $detailInput.value.trim();
+        const username = $detailInputBtn.dataset.username;
+        const postId = $detailInputBtn.dataset.postid;
+        if (!content || !username) {
+            e.preventDefault();
+            return;
+        }
+
+        const response = await fetch("/list/comments", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "x-csrf-token": $csrfInput.value,
+            },
+            body: JSON.stringify({ username, comment: content, postId }),
+        });
+
+        const data = await response.json();
+        if(data.ok){
+            window.location.href = `/list/detail/${postId}`
+        }
+    });
+</script>
+
+<%- include('footer.ejs')%>
